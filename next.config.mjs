@@ -50,10 +50,8 @@ const nextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
-  // Experimental features
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
+  // External packages for server components
+  serverExternalPackages: [],
   
   // Security: Disable x-powered-by header
   poweredByHeader: false,
