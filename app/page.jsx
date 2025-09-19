@@ -61,10 +61,10 @@ export default function Home() {
       <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20">
         <div className="grid grid-cols-4 gap-6 text-red-500">
           {[
-            { icon: <FaTwitter />, href: 'https://x.com' },
-            { icon: <FaTelegramPlane />, href: 'https://t.me' },
-            { icon: <FaDiscord />, href: 'https://discord.com' },
-            { icon: <FaShoppingBag />, href: 'https://magiceden.io' }
+            { icon: <FaTwitter />, href: 'https://x.com/BreedPuppers' },
+            { icon: <FaTelegramPlane />, href: '#' },
+            { icon: <FaDiscord />, href: 'https://discord.com/invite/EbxDQVBkzM' },
+            { icon: <FaShoppingBag />, href: 'https://magiceden.us/collections/apechain/0x942e4b97b9bad206b2e1333be7747fd27eaaab6c' }
           ].map(({ icon, href }, idx) => (
             <a
               key={idx}

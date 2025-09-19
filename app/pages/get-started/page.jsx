@@ -101,10 +101,17 @@ export default function GetStarted() {
       {/* Social Icons */}
       <div className="relative z-20 mt-16 mb-2.5 flex justify-center">
         <div className="grid grid-cols-4 gap-6 text-red-500">
-          {[FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag].map((Icon, idx) => (
+          {[
+            { Icon: FaTwitter, href: 'https://x.com/BreedPuppers' },
+            { Icon: FaTelegramPlane, href: '#' },
+            { Icon: FaDiscord, href: 'https://discord.com/invite/EbxDQVBkzM' },
+            { Icon: FaShoppingBag, href: 'https://magiceden.us/collections/apechain/0x942e4b97b9bad206b2e1333be7747fd27eaaab6c' }
+          ].map(({ Icon, href }, idx) => (
             <a
               key={idx}
-              href="#"
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-4xl p-4 border-2 border-red-600 rounded-full neon-shadow repair-icon transition-all duration-500 hover:text-white hover:scale-110 hover:shadow-red-500/70"
             >
               <Icon />

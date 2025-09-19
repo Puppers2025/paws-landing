@@ -77,10 +77,17 @@ export default function Dashboard() {
 
           {/* Social Icons */}
           <div className="grid grid-cols-4 gap-4 mt-10 text-red-500">
-            {[FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag].map((Icon, idx) => (
+            {[
+              { Icon: FaTwitter, href: 'https://x.com/BreedPuppers' },
+              { Icon: FaTelegramPlane, href: '#' },
+              { Icon: FaDiscord, href: 'https://discord.com/invite/EbxDQVBkzM' },
+              { Icon: FaShoppingBag, href: 'https://magiceden.us/collections/apechain/0x942e4b97b9bad206b2e1333be7747fd27eaaab6c' }
+            ].map(({ Icon, href }, idx) => (
               <a
                 key={idx}
-                href="#"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-2xl p-2 border border-red-600 rounded-full neon-shadow transition hover:text-white hover:scale-110"
               >
                 <Icon />
