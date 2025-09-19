@@ -16,52 +16,30 @@ export default function Home() {
   }, [])
 
   return (
-    <div 
-      className="relative h-screen w-screen overflow-hidden text-white"
-      style={{
-        backgroundImage: 'url("/images/Future9.png")',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh'
-      }}
-    >
-      {/* Dark overlay with opacity */}
-      <div className="absolute inset-0 bg-black/50" />
-      
-      {/* Debug: Test if image loads */}
-      <img 
-        src="/images/Future9-backup.png" 
-        alt="Debug" 
-        className="absolute top-4 right-4 w-16 h-16 opacity-50 z-50"
-        onLoad={() => console.log('Image loaded successfully')}
-        onError={() => console.log('Image failed to load')}
-      />
-      
-      {/* Debug: Test with data URL */}
+    <div className="relative min-h-screen w-full bg-black text-white">
+      {/* Simple background approach for Vercel */}
       <div 
-        className="absolute top-4 left-4 w-16 h-16 bg-red-500 z-50"
+        className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0icmVkIi8+PC9zdmc+")',
-          backgroundSize: 'cover'
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%)',
+          backgroundSize: '100% 100%',
+          backgroundRepeat: 'no-repeat'
         }}
       />
       
-      {/* Debug: Test with Next.js Image */}
-      <div className="absolute top-20 right-4 w-16 h-16 z-50">
-        <Image
-          src="/images/Future9-backup.png"
-          alt="Next.js Image Test"
-          width={64}
-          height={64}
-          className="opacity-50"
-          onLoad={() => console.log('Next.js Image loaded successfully')}
-          onError={() => console.log('Next.js Image failed to load')}
-        />
-      </div>
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 z-10 backdrop-blur-sm" />
+      {/* Test background image with simple approach */}
+      <div 
+        className="absolute inset-0 w-full h-full opacity-20"
+        style={{
+          backgroundImage: 'url("/images/Future9.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
+      
+      {/* Simple overlay */}
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
       <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-6">
