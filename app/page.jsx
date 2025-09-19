@@ -29,7 +29,7 @@ export default function Home() {
       
       {/* Test background image with simple approach */}
       <div 
-        className="absolute inset-0 w-full h-full opacity-20"
+        className="absolute inset-0 w-full h-full opacity-40"
         style={{
           backgroundImage: 'url("/images/Future9.png")',
           backgroundSize: 'cover',
