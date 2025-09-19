@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'  // ← NEW
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag } from 'react-icons/fa'
+import Image from 'next/image'
 
 export default function Home() {
   const [showText, setShowText] = useState(false)
@@ -20,7 +21,7 @@ export default function Home() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ 
-          backgroundImage: 'url("/images/Future9.png")', 
+          backgroundImage: 'url("/images/Future9-backup.png")', 
           opacity: 0.25,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
@@ -33,12 +34,34 @@ export default function Home() {
       
       {/* Debug: Test if image loads */}
       <img 
-        src="/images/Future9.png" 
+        src="/images/Future9-backup.png" 
         alt="Debug" 
         className="absolute top-4 right-4 w-16 h-16 opacity-50 z-50"
         onLoad={() => console.log('Image loaded successfully')}
         onError={() => console.log('Image failed to load')}
       />
+      
+      {/* Debug: Test with data URL */}
+      <div 
+        className="absolute top-4 left-4 w-16 h-16 bg-red-500 z-50"
+        style={{
+          backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0icmVkIi8+PC9zdmc+")',
+          backgroundSize: 'cover'
+        }}
+      />
+      
+      {/* Debug: Test with Next.js Image */}
+      <div className="absolute top-20 right-4 w-16 h-16 z-50">
+        <Image
+          src="/images/Future9-backup.png"
+          alt="Next.js Image Test"
+          width={64}
+          height={64}
+          className="opacity-50"
+          onLoad={() => console.log('Next.js Image loaded successfully')}
+          onError={() => console.log('Next.js Image failed to load')}
+        />
+      </div>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 z-10 backdrop-blur-sm" />
