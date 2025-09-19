@@ -19,15 +19,15 @@ export default function Home() {
     <div 
       className="relative h-screen w-screen overflow-hidden text-white"
       style={{
-        backgroundImage: 'url("https://via.placeholder.com/1024x1024/1a1a1a/ffffff?text=PAW")',
-        backgroundSize: 'cover',
+        backgroundImage: 'url("/images/Future9.png")',
+        backgroundSize: 'contain',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
+        minHeight: '100vh'
       }}
     >
       {/* Dark overlay with opacity */}
-      <div className="absolute inset-0 bg-black/75" />
+      <div className="absolute inset-0 bg-black/50" />
       
       {/* Debug: Test if image loads */}
       <img 
