@@ -21,7 +21,7 @@ export default function Home() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ 
           backgroundImage: 'url("/images/Future9.png")', 
-          opacity: 0.5,
+          opacity: 0.25,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
           backgroundAttachment: 'fixed'
@@ -30,6 +30,15 @@ export default function Home() {
       
       {/* Fallback background color */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-red-900/20" />
+      
+      {/* Debug: Test if image loads */}
+      <img 
+        src="/images/Future9.png" 
+        alt="Debug" 
+        className="absolute top-4 right-4 w-16 h-16 opacity-50 z-50"
+        onLoad={() => console.log('Image loaded successfully')}
+        onError={() => console.log('Image failed to load')}
+      />
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 z-10 backdrop-blur-sm" />

@@ -96,7 +96,7 @@ export default function AuthTabs() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed z-0"
         style={{ 
           backgroundImage: 'url("/images/Future9.png")', 
-          opacity: 0.5,
+          opacity: 0.25,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
           backgroundAttachment: 'fixed'
