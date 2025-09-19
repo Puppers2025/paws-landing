@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import LoadingScreen from '@/components/ui/LoadingScreen'
+import LoadingScreen from './components/ui/LoadingScreen'
 
 export default function PuppyWorld() {
   const [loading, setLoading] = useState(true)

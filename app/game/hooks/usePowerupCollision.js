@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import handlePowerupCollisions from '@/game/hooks/collisions/handlePowerupCollisions'
+import handlePowerupCollisions from './collisions/handlePowerupCollisions'
 
 export default function usePowerupCollision({
   characterX,

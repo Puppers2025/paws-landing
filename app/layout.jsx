@@ -1,5 +1,5 @@
 // app/layout.jsx
-import '@/styles/globals.css'
+import './styles/globals.css'
 import { Orbitron, Rajdhani, Press_Start_2P } from 'next/font/google'
 import { OverviewModalsProvider } from '@/components/overview/hooks/overviewModals'
 

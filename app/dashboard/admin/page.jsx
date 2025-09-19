@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { FaUserSecret, FaUsers, FaChartPie, FaCoins, FaClipboardList, FaEdit, FaTrash, FaLock } from 'react-icons/fa'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { getEnv } from '@/lib/env'
+import { getEnv } from '../../../lib/env'
 
 const dummyStats = {
   totalStakers: 1489,

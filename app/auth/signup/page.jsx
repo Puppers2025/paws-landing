@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag } from 'react-icons/fa'
-import { InputValidator } from '@/lib/security'
+import { InputValidator } from '../../lib/security'
 
 export default function AuthTabs() {
   const [tab, setTab] = useState('signin')

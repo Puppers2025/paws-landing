@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import useCharacterCollision from '@/game/hooks/collisions/handleCharacterCollisions'
-import useBulletCollision from '@/game/hooks/collisions/handleBulletCollisions'
-import usePowerupCollision from '@/game/hooks/usePowerupCollision'
+import useCharacterCollision from './collisions/handleCharacterCollisions'
+import useBulletCollision from './collisions/handleBulletCollisions'
+import usePowerupCollision from './usePowerupCollision'
 
 // ✅ Shared kill tracker
 const killedRef = { current: new Set() }

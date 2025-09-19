@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import useGameState from '@/game/hooks/useGameState'
+import useGameState from './hooks/useGameState'
 import useGameCollision, {
   killedRef,
   resetKilledRef,
   resetMissedRef
-} from '@/game/hooks/useGameCollision'
+} from './hooks/useGameCollision'
 import { FaRedo, FaHome } from 'react-icons/fa'
 
 export default function GamePage() {
