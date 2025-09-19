@@ -21,7 +21,7 @@ export default function Home() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ 
-          backgroundImage: 'url("https://res.cloudinary.com/dncbk5sac/image/upload/v1758321129/paws-landing/paws-landing/future9.png")', 
+          backgroundImage: 'url("https://res.cloudinary.com/dncbk5sac/image/upload/v1758321417/paws-landing/paws-landing/backgrounds/Future9.png")', 
           opacity: 0.25,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
