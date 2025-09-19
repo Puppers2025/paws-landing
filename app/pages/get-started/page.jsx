@@ -12,6 +12,7 @@ import {
   FaTelegramPlane,
   FaDiscord,
   FaShoppingBag,
+  FaArrowLeft,
 } from 'react-icons/fa'
 
 const puppers = [
@@ -62,10 +63,20 @@ const puppers = [
 export default function GetStarted() {
   return (
     <div className="relative min-h-screen bg-black text-white px-4 py-10 overflow-hidden">
+      {/* ✅ Back Button */}
+      <Link 
+        href="/"
+        className="absolute top-6 left-6 z-30 text-red-500 hover:text-white transition-all duration-300"
+      >
+        <div className="p-3 border-2 border-red-600 rounded-full neon-shadow repair-icon transition-all duration-500 hover:scale-110 hover:shadow-red-500/70">
+          <FaArrowLeft className="text-2xl" />
+        </div>
+      </Link>
+
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
-        style={{ backgroundImage: 'url("/images/Future9.png")', opacity: 0.25 }}
+        style={{ backgroundImage: 'url("https://res.cloudinary.com/dncbk5sac/image/upload/v1758321417/paws-landing/paws-landing/backgrounds/Future9.png")', opacity: 0.25 }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 backdrop-blur-sm z-0" />
 

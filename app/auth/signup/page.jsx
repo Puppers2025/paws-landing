@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag } from 'react-icons/fa'
+import { FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag, FaArrowLeft } from 'react-icons/fa'
 import { InputValidator } from '../../../lib/security'
 
 export default function AuthTabs() {
@@ -91,6 +91,16 @@ export default function AuthTabs() {
 
   return (
     <div className="relative min-h-screen bg-black text-white flex items-center justify-center px-4 overflow-hidden">
+      {/* ✅ Back Button */}
+      <Link 
+        href="/"
+        className="absolute top-6 left-6 z-30 text-red-500 hover:text-white transition-all duration-300"
+      >
+        <div className="p-3 border-2 border-red-600 rounded-full neon-shadow repair-icon transition-all duration-500 hover:scale-110 hover:shadow-red-500/70">
+          <FaArrowLeft className="text-2xl" />
+        </div>
+      </Link>
+
       {/* ✅ Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed z-0"
