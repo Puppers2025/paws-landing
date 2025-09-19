@@ -13,7 +13,6 @@ import {
   FaTelegramPlane,
   FaDiscord,
   FaShoppingBag,
-  FaArrowLeft,
 } from 'react-icons/fa'
 
 import { useOverviewModals } from '@/components/overview/hooks/overviewModals'
@@ -34,16 +33,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
-      {/* ✅ Back Button */}
-      <Link 
-        href="/"
-        className="absolute top-6 left-6 z-40 text-red-500 hover:text-white transition-all duration-300"
-      >
-        <div className="p-3 border-2 border-red-600 rounded-full neon-shadow repair-icon transition-all duration-500 hover:scale-110 hover:shadow-red-500/70">
-          <FaArrowLeft className="text-2xl" />
-        </div>
-      </Link>
-
       {/* Top Status Bar */}
       <div className="w-full fixed top-0 left-0 right-0 bg-zinc-900 border-b border-red-600 z-30 px-4 py-3 flex justify-between items-center shadow-md">
         <div className="font-button text-sm sm:text-base">
