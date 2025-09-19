@@ -18,9 +18,18 @@ export default function Home() {
     <div className="relative h-screen w-screen overflow-hidden bg-black text-white">
       {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={{ backgroundImage: 'url("/images/Future9.png")', opacity: 0.25 }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+        style={{ 
+          backgroundImage: 'url("/images/Future9.png")', 
+          opacity: 0.5,
+          backgroundPosition: 'center center',
+          backgroundSize: 'cover',
+          backgroundAttachment: 'fixed'
+        }}
       />
+      
+      {/* Fallback background color */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-red-900/20" />
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 z-10 backdrop-blur-sm" />

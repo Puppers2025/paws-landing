@@ -93,9 +93,18 @@ export default function AuthTabs() {
     <div className="relative min-h-screen bg-black text-white flex items-center justify-center px-4 overflow-hidden">
       {/* ✅ Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
-        style={{ backgroundImage: 'url("/images/Future9.png")', opacity: 0.25 }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed z-0"
+        style={{ 
+          backgroundImage: 'url("/images/Future9.png")', 
+          opacity: 0.5,
+          backgroundPosition: 'center center',
+          backgroundSize: 'cover',
+          backgroundAttachment: 'fixed'
+        }}
       />
+      
+      {/* Fallback background color */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-red-900/20 z-0" />
 
       {/* ✅ Blur Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 backdrop-blur-sm z-0" />
