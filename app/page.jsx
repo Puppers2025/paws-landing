@@ -16,30 +16,21 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="relative min-h-screen w-full bg-black text-white">
-      {/* Simple background approach for Vercel */}
-      <div 
-        className="absolute inset-0 w-full h-full"
-        style={{
-          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%)',
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
-      
-      {/* Test background image with external source */}
-      <div 
-        className="absolute inset-0 w-full h-full opacity-40"
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1024&h=1024&fit=crop&crop=center")',
+    <div className="relative h-screen w-screen overflow-hidden bg-black text-white">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+        style={{ 
+          backgroundImage: 'url("https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1024&h=1024&fit=crop&crop=center")', 
+          opacity: 0.25,
+          backgroundPosition: 'center center',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundAttachment: 'fixed'
         }}
       />
-      
-      {/* Simple overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 z-10 backdrop-blur-sm" />
 
       {/* Content */}
       <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-6">
