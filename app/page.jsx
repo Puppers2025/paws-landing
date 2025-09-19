@@ -27,11 +27,11 @@ export default function Home() {
         }}
       />
       
-      {/* Test background image with simple approach */}
+      {/* Test background image with external source */}
       <div 
         className="absolute inset-0 w-full h-full opacity-40"
         style={{
-          backgroundImage: 'url("/images/Future9.png")',
+          backgroundImage: 'url("https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1024&h=1024&fit=crop&crop=center")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
