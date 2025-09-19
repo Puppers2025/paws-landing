@@ -16,21 +16,18 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-black text-white">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
-        style={{ 
-          backgroundImage: 'url("https://via.placeholder.com/1024x1024/1a1a1a/ffffff?text=PAW")', 
-          opacity: 0.25,
-          backgroundPosition: 'center center',
-          backgroundSize: 'cover',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-      
-      {/* Fallback background color */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-red-900/20" />
+    <div 
+      className="relative h-screen w-screen overflow-hidden text-white"
+      style={{
+        backgroundImage: 'url("https://via.placeholder.com/1024x1024/1a1a1a/ffffff?text=PAW")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay with opacity */}
+      <div className="absolute inset-0 bg-black/75" />
       
       {/* Debug: Test if image loads */}
       <img 
