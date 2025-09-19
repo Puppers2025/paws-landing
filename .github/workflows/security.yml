@@ -1,0 +1,254 @@
+name: 🔒 Security Audit & Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security audit daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      audit_type:
+        description: 'Type of security audit to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+        - quick
+        - full
+        - test-only
+
+jobs:
+  security-audit:
+    name: 🔍 Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Run security audit
+      run: |
+        if [ "${{ github.event.inputs.audit_type }}" = "quick" ]; then
+          npm run security-audit-quick
+        elif [ "${{ github.event.inputs.audit_type }}" = "test-only" ]; then
+          npm run security-test
+        else
+          npm run security-audit
+        fi
+      continue-on-error: false
+      
+    - name: 📊 Upload security report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-audit-report
+        path: |
+          logs/security-monitor.log
+          logs/security-alerts.log
+          logs/security-report.json
+        retention-days: 30
+
+  security-tests:
+    name: 🧪 Security Tests
+    runs-on: ubuntu-latest
+    needs: security-audit
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🧪 Run unit tests
+      run: npm run security-test-unit
+      
+    - name: 🔗 Run integration tests
+      run: npm run security-test-integration
+      
+    - name: 📊 Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-test-results
+        path: |
+          logs/security-monitor.log
+          logs/security-alerts.log
+        retention-days: 30
+
+  dependency-check:
+    name: 📦 Dependency Security
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Check for vulnerabilities
+      run: npm audit --audit-level=moderate
+      continue-on-error: true
+      
+    - name: 🔧 Auto-fix vulnerabilities
+      run: npm audit fix --audit-level=moderate
+      continue-on-error: true
+      
+    - name: 📊 Upload audit results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: dependency-audit-results
+        path: |
+          package-lock.json
+        retention-days: 30
+
+  code-quality:
+    name: 📝 Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Run linting
+      run: npm run lint
+      continue-on-error: true
+      
+    - name: 🔧 Fix linting issues
+      run: npm run lint:fix
+      continue-on-error: true
+      
+    - name: 🏗️ Build check
+      run: npm run build
+      continue-on-error: true
+
+  security-score:
+    name: 📊 Security Score
+    runs-on: ubuntu-latest
+    needs: [security-audit, security-tests, dependency-check, code-quality]
+    if: always()
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Calculate security score
+      id: security-score
+      run: |
+        # Run security audit and capture score
+        AUDIT_OUTPUT=$(npm run security-audit-quick 2>&1)
+        SCORE=$(echo "$AUDIT_OUTPUT" | grep -o 'Security Score: [0-9]*%' | grep -o '[0-9]*' || echo "0")
+        echo "score=$SCORE" >> $GITHUB_OUTPUT
+        echo "Security Score: $SCORE%"
+        
+    - name: 📊 Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const score = ${{ steps.security-score.outputs.score }};
+          const emoji = score >= 95 ? '🟢' : score >= 85 ? '🟡' : score >= 70 ? '🟠' : '🔴';
+          const status = score >= 95 ? 'EXCELLENT' : score >= 85 ? 'GOOD' : score >= 70 ? 'FAIR' : 'POOR';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 🔒 Security Audit Results
+            
+            **Security Score:** ${emoji} ${score}% (${status})
+            
+            ${score >= 95 ? '✅ Production ready!' : score >= 85 ? '⚠️ Minor issues to address' : '❌ Security issues need attention'}
+            
+            [View full security report](${context.payload.pull_request.html_url}/checks)`
+          });
+          
+    - name: 🚨 Fail on low security score
+      if: steps.security-score.outputs.score < 85
+      run: |
+        echo "❌ Security score too low: ${{ steps.security-score.outputs.score }}%"
+        echo "Minimum required score: 85%"
+        exit 1
+
+  notify:
+    name: 📢 Notify Results
+    runs-on: ubuntu-latest
+    needs: [security-audit, security-tests, dependency-check, code-quality, security-score]
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    
+    steps:
+    - name: 📊 Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+        
+    - name: 📢 Create security summary
+      run: |
+        echo "## 🔒 Daily Security Report" > security-summary.md
+        echo "" >> security-summary.md
+        echo "**Date:** $(date)" >> security-summary.md
+        echo "**Repository:** ${{ github.repository }}" >> security-summary.md
+        echo "**Branch:** ${{ github.ref_name }}" >> security-summary.md
+        echo "" >> security-summary.md
+        echo "### 📊 Results Summary" >> security-summary.md
+        echo "- Security Audit: ${{ needs.security-audit.result }}" >> security-summary.md
+        echo "- Security Tests: ${{ needs.security-tests.result }}" >> security-summary.md
+        echo "- Dependency Check: ${{ needs.dependency-check.result }}" >> security-summary.md
+        echo "- Code Quality: ${{ needs.code-quality.result }}" >> security-summary.md
+        echo "- Security Score: ${{ needs.security-score.outputs.score }}%" >> security-summary.md
+        echo "" >> security-summary.md
+        echo "### 📁 Artifacts" >> security-summary.md
+        echo "- Security audit report" >> security-summary.md
+        echo "- Security test results" >> security-summary.md
+        echo "- Dependency audit results" >> security-summary.md
+        
+    - name: 📤 Upload summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-summary
+        path: security-summary.md
+        retention-days: 30

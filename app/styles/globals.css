@@ -1,0 +1,180 @@
+/* 1. Font Import - Must be at the very top */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Quicksand:wght@400;600&family=Press+Start+2P&display=swap');
+
+/* 2. Tailwind Setup */
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3. Theme + Font Variables */
+:root {
+  --font-primary: 'Orbitron', sans-serif;
+  --font-secondary: 'Quicksand', sans-serif;
+  --font-button: 'Press Start 2P', cursive;
+
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* 4. Base Typography */
+body {
+  font-family: var(--font-secondary);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-primary);
+}
+
+button, .button-font {
+  font-family: var(--font-button);
+}
+
+/* 5. Border Animation Effects */
+@keyframes borderFix {
+  0% {
+    clip-path: polygon(
+      0% 0%, 10% 0%, 10% 10%, 0% 10%,
+      0% 90%, 10% 90%, 10% 100%, 0% 100%,
+      90% 100%, 100% 100%, 100% 90%, 90% 90%,
+      100% 10%, 90% 10%, 90% 0%, 100% 0%
+    );
+    border-color: #ff073a;
+  }
+  100% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    border-color: #e0115f;
+  }
+}
+
+@keyframes pulseColors {
+  0%, 100% {
+    box-shadow: 0 0 12px #ff073a;
+    border-color: #ff073a;
+  }
+  50% {
+    box-shadow: 0 0 16px #e0115f;
+    border-color: #e0115f;
+  }
+}
+
+.border-repair {
+  animation: borderFix 2s ease-in-out 1s forwards, pulseColors 2s ease-in-out 3s infinite;
+}
+
+/* 6. Button Glow Animation */
+@keyframes glowPulseBtn {
+  0%, 100% {
+    box-shadow: 0 0 4px #ff1a4f, 0 0 8px #ff1a4f, 0 0 12px #ff1a4f;
+  }
+  50% {
+    box-shadow: 0 0 8px #ff1a4f, 0 0 16px #ff1a4f, 0 0 24px #ff1a4f;
+  }
+}
+
+.glow-pulse {
+  animation: glowPulseBtn 2s ease-in-out infinite;
+}
+
+/* 7. Flicker Effect */
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 22%, 24%, 55% {
+    opacity: 0.3;
+  }
+}
+
+.flicker {
+  animation: flicker 2s infinite;
+}
+
+/* 8. Social Icon Glow + Repair */
+@keyframes repairEffect {
+  0% {
+    border-color: transparent;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  25% {
+    border-color: #7f1d1d;
+    opacity: 0.5;
+  }
+  50% {
+    border-color: #dc2626;
+    opacity: 1;
+  }
+  100% {
+    border-color: #f87171;
+    transform: scale(1);
+  }
+}
+
+@keyframes glowPulseIcon {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 50, 50, 0.2), 0 0 20px rgba(255, 0, 0, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 70, 70, 0.5), 0 0 40px rgba(255, 20, 20, 0.4);
+  }
+}
+
+@keyframes boxGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px #ff1a4f, 0 0 20px #ff1a4f, 0 0 30px #ff1a4f;
+    border-color: #ff1a4f;
+  }
+  50% {
+    box-shadow: 0 0 15px #ff4d6d, 0 0 25px #ff4d6d, 0 0 35px #ff4d6d;
+    border-color: #ff4d6d;
+  }
+}
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+.glow-box {
+  animation: boxGlow 2s ease-in-out infinite;
+  border-width: 2px !important;
+  border-style: solid;
+}
+
+.neon-shadow {
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3), 0 0 20px rgba(255, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.repair-icon {
+  animation: repairEffect 2.5s ease-out 2s 1 forwards, glowPulseIcon 3s ease-in-out infinite alternate;
+}
+
+/* Scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #ef4444; /* Tailwind red-500 */
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
