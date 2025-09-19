@@ -95,7 +95,7 @@ export default function AuthTabs() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed z-0"
         style={{ 
-          backgroundImage: 'url("/images/Future9.png")', 
+          backgroundImage: 'url("https://via.placeholder.com/1024x1024/1a1a1a/ffffff?text=PAW")', 
           opacity: 0.25,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
