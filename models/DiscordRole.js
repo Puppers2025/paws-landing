@@ -12,7 +12,8 @@ const discordRoleSchema = new mongoose.Schema({
   roleName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    enum: ['Puppy', 'Puppy Training', 'Pup Trainer', 'Pup Owner', 'Pup Whisperer', 'Pup Star', 'Pup Master']
   },
   
   // Level Requirements

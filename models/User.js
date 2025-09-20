@@ -134,14 +134,14 @@ const userSchema = new mongoose.Schema({
   // Discord Role Sync (Original Discord roles - unchanged)
   discordRole: {
     type: String,
-    enum: ['puppy', 'adult', 'alpha', 'legend', 'admin'],
-    default: 'puppy'
+    enum: ['Puppy', 'Puppy Training', 'Pup Trainer', 'Pup Owner', 'Pup Whisperer', 'Pup Star', 'Pup Master'],
+    default: 'Puppy'
   },
   
   // Game Level Role (2x Discord NFT multiplier) - Uses same names as Discord roles
   gameRole: {
     type: String,
-    enum: ['puppy', 'adult', 'alpha', 'legend', 'admin'],
+    enum: ['Puppy', 'Puppy Training', 'Pup Trainer', 'Pup Owner', 'Pup Whisperer', 'Pup Star', 'Pup Master'],
     default: null
   },
   
@@ -150,11 +150,13 @@ const userSchema = new mongoose.Schema({
     type: Map,
     of: Number,
     default: new Map([
-      ['puppy', 1],      // 0 NFTs * 2 + 1
-      ['adult', 50],     // 25 NFTs * 2
-      ['alpha', 100],    // 50 NFTs * 2
-      ['legend', 150],   // 75 NFTs * 2
-      ['admin', 200]     // 100 NFTs * 2
+      ['Puppy', 2],           // 1 NFT * 2
+      ['Puppy Training', 20], // 10 NFTs * 2
+      ['Pup Trainer', 50],    // 25 NFTs * 2
+      ['Pup Owner', 120],     // 60 NFTs * 2
+      ['Pup Whisperer', 150], // 75 NFTs * 2
+      ['Pup Star', 200],      // 100 NFTs * 2
+      ['Pup Master', 400]     // 200 NFTs * 2
     ])
   },
   
@@ -245,11 +247,13 @@ userSchema.methods.updateDiscordRole = function() {
 // Method to update game role based on level (2x Discord multiplier)
 userSchema.methods.updateGameRole = function() {
   const roleMappings = this.discordRoleMappings || new Map([
-    ['puppy', 1],
-    ['adult', 50],
-    ['alpha', 100],
-    ['legend', 150],
-    ['admin', 200]
+    ['Puppy', 2],
+    ['Puppy Training', 20],
+    ['Pup Trainer', 50],
+    ['Pup Owner', 120],
+    ['Pup Whisperer', 150],
+    ['Pup Star', 200],
+    ['Pup Master', 400]
   ]);
   
   let newGameRole = null;
