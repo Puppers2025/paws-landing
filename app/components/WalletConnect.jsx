@@ -1,11 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWallet } from '../hooks/useWallet';
+import { detectWalletProvider, getSupportedWallets } from '../../lib/wallet-utils';
 
 const WalletConnect = ({ onConnect, className = '' }) => {
   const { isConnected, address, isConnecting, connect, disconnect } = useWallet();
   const [error, setError] = useState(null);
+  const [detectedWallet, setDetectedWallet] = useState(null);
+  const [supportedWallets, setSupportedWallets] = useState([]);
+
+  useEffect(() => {
+    // Detect wallet on component mount
+    const wallet = detectWalletProvider();
+    setDetectedWallet(wallet);
+    setSupportedWallets(getSupportedWallets());
+  }, []);
 
   const handleConnect = async () => {
     try {
@@ -31,9 +41,14 @@ const WalletConnect = ({ onConnect, className = '' }) => {
       <div className={`flex items-center space-x-3 ${className}`}>
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-gray-600">
-            {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
-          </span>
+          <div className="flex flex-col">
+            <span className="text-sm text-gray-600">
+              {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
+            </span>
+            {detectedWallet && (
+              <span className="text-xs text-gray-500">{detectedWallet}</span>
+            )}
+          </div>
         </div>
         <button
           onClick={handleDisconnect}
@@ -69,6 +84,40 @@ const WalletConnect = ({ onConnect, className = '' }) => {
       {error && (
         <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
       )}
+      
+      <div className="mt-4 text-center">
+        <p className="text-sm text-gray-500 mb-2">
+          {detectedWallet ? (
+            <>Detected: <span className="font-medium text-blue-600">{detectedWallet}</span></>
+          ) : (
+            <>No wallet detected</>
+          )}
+        </p>
+        <p className="text-xs text-gray-400">
+          Supported wallets: {supportedWallets.slice(0, 3).join(', ')}
+          {supportedWallets.length > 3 && ` +${supportedWallets.length - 3} more`}
+        </p>
+        <p className="text-xs text-gray-400 mt-1">
+          Don't have a wallet?{' '}
+          <a 
+            href="https://metamask.io/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Install MetaMask
+          </a>
+          {' or '}
+          <a 
+            href="https://walletconnect.com/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            WalletConnect
+          </a>
+        </p>
+      </div>
     </div>
   );
 };

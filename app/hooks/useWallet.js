@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { connectWallet } from '../../lib/wallet-utils';
 
 export const useWallet = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -20,20 +21,14 @@ export const useWallet = () => {
   }, []);
 
   const connect = async () => {
-    if (typeof window === 'undefined' || !window.ethereum) {
-      throw new Error('No wallet found');
-    }
-
     setIsConnecting(true);
     try {
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
+      const result = await connectWallet();
       
-      if (accounts.length > 0) {
-        setAddress(accounts[0]);
+      if (result && result.address) {
+        setAddress(result.address);
         setIsConnected(true);
-        return accounts[0];
+        return result.address;
       }
     } catch (error) {
       console.error('Wallet connection error:', error);
