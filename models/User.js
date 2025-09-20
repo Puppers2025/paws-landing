@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 1,
     min: 1,
-    max: 100
+    max: 1000 // Increased to support high-level roles
   },
   
   experience: {
@@ -268,7 +268,10 @@ userSchema.methods.updateGameRole = function() {
   let newGameRole = null;
   
   // Check from highest to lowest level
-  for (const [roleName, requiredLevel] of roleMappings) {
+  // Convert Map to array of [roleName, requiredLevel] and sort by requiredLevel descending
+  const sortedRoles = Array.from(roleMappings.entries()).sort((a, b) => b[1] - a[1]);
+
+  for (const [roleName, requiredLevel] of sortedRoles) {
     if (this.level >= requiredLevel) {
       newGameRole = roleName;
       break;
