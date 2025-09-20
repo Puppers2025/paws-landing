@@ -22,6 +22,20 @@ const discordRoleSchema = new mongoose.Schema({
     min: 1
   },
   
+  // Game Level Requirements (2x Discord NFT multiplier)
+  gameLevelRequired: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  
+  // Discord NFT Requirements
+  nftRequired: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  
   // Role Properties
   color: {
     type: String,
@@ -135,6 +149,34 @@ discordRoleSchema.statics.getRolesByLevel = function(level) {
   }).sort({ levelRequired: -1 });
 };
 
+// Static method to get roles by game level
+discordRoleSchema.statics.getRolesByGameLevel = function(gameLevel) {
+  return this.find({ 
+    gameLevelRequired: { $lte: gameLevel }, 
+    isActive: true 
+  }).sort({ gameLevelRequired: -1 });
+};
+
+// Static method to get roles by NFT count
+discordRoleSchema.statics.getRolesByNFTCount = function(nftCount) {
+  return this.find({ 
+    nftRequired: { $lte: nftCount }, 
+    isActive: true 
+  }).sort({ nftRequired: -1 });
+};
+
+// Static method to get user's highest role via any method
+discordRoleSchema.statics.getUserHighestRole = function(userLevel, userGameLevel, userNFTCount) {
+  return this.find({ 
+    $or: [
+      { levelRequired: { $lte: userLevel } },
+      { gameLevelRequired: { $lte: userGameLevel } },
+      { nftRequired: { $lte: userNFTCount } }
+    ],
+    isActive: true 
+  }).sort({ priority: -1 }).limit(1);
+};
+
 // Static method to get next role
 discordRoleSchema.statics.getNextRole = function(currentLevel) {
   return this.findOne({ 
@@ -146,6 +188,23 @@ discordRoleSchema.statics.getNextRole = function(currentLevel) {
 // Method to check if user qualifies for role
 discordRoleSchema.methods.userQualifies = function(userLevel) {
   return userLevel >= this.levelRequired && this.isActive;
+};
+
+// Method to check if user qualifies for role via game level
+discordRoleSchema.methods.userQualifiesViaGame = function(userGameLevel) {
+  return userGameLevel >= this.gameLevelRequired && this.isActive;
+};
+
+// Method to check if user qualifies for role via NFT count
+discordRoleSchema.methods.userQualifiesViaNFT = function(userNFTCount) {
+  return userNFTCount >= this.nftRequired && this.isActive;
+};
+
+// Method to check if user qualifies for role via either method
+discordRoleSchema.methods.userQualifiesDual = function(userLevel, userGameLevel, userNFTCount) {
+  return (userLevel >= this.levelRequired || 
+          userGameLevel >= this.gameLevelRequired || 
+          userNFTCount >= this.nftRequired) && this.isActive;
 };
 
 // Static method to sync roles with Discord

@@ -90,6 +90,13 @@ const userSchema = new mongoose.Schema({
     min: 0
   },
   
+  // Discord NFT Count (for verification roles)
+  nftCount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  
   // Powerups Inventory
   powerups: [{
     type: {
@@ -129,6 +136,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['puppy', 'adult', 'alpha', 'legend', 'admin'],
     default: 'puppy'
+  },
+  
+  // Game Level Role (2x Discord NFT multiplier)
+  gameRole: {
+    type: String,
+    enum: ['Pup Whisperer', 'Pup Star', 'Pup Legend', 'Pup Master', 'Pup God'],
+    default: null
+  },
+  
+  // Discord Role Mappings (NFT count -> Game level)
+  discordRoleMappings: {
+    type: Map,
+    of: Number,
+    default: new Map([
+      ['Pup Whisperer', 150],    // 75 NFTs * 2
+      ['Pup Star', 200],         // 100 NFTs * 2  
+      ['Pup Legend', 300],       // 150 NFTs * 2
+      ['Pup Master', 400],       // 200 NFTs * 2
+      ['Pup God', 600]           // 300 NFTs * 2
+    ])
   },
   
   // Account Status
@@ -178,17 +205,28 @@ userSchema.virtual('experiencePercentage').get(function() {
 userSchema.methods.addExperience = function(amount) {
   this.experience += amount;
   
+  let levelUps = 0;
+  let gameRoleUpdate = null;
+  
   // Check for level up
   while (this.experience >= this.experienceToNextLevel) {
     this.experience -= this.experienceToNextLevel;
     this.level += 1;
+    levelUps += 1;
     this.experienceToNextLevel = Math.floor(this.experienceToNextLevel * 1.2); // 20% increase per level
     
     // Update Discord role based on level
     this.updateDiscordRole();
+    
+    // Check for game role update
+    gameRoleUpdate = this.updateGameRole();
   }
   
-  return this.save();
+  return this.save().then(() => ({
+    levelUps,
+    newLevel: this.level,
+    gameRoleUpdate
+  }));
 };
 
 // Method to update Discord role based on level
@@ -202,6 +240,44 @@ userSchema.methods.updateDiscordRole = function() {
   } else {
     this.discordRole = 'puppy';
   }
+};
+
+// Method to update game role based on level (2x Discord multiplier)
+userSchema.methods.updateGameRole = function() {
+  const roleMappings = this.discordRoleMappings || new Map([
+    ['Pup Whisperer', 150],
+    ['Pup Star', 200],
+    ['Pup Legend', 300],
+    ['Pup Master', 400],
+    ['Pup God', 600]
+  ]);
+  
+  let newGameRole = null;
+  
+  // Check from highest to lowest level
+  for (const [roleName, requiredLevel] of roleMappings) {
+    if (this.level >= requiredLevel) {
+      newGameRole = roleName;
+      break;
+    }
+  }
+  
+  // Only update if role has changed
+  if (newGameRole !== this.gameRole) {
+    this.gameRole = newGameRole;
+    return {
+      roleChanged: true,
+      oldRole: this.gameRole,
+      newRole: newGameRole,
+      level: this.level
+    };
+  }
+  
+  return {
+    roleChanged: false,
+    currentRole: this.gameRole,
+    level: this.level
+  };
 };
 
 // Method to add powerup
