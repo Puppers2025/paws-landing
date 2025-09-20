@@ -105,7 +105,16 @@ const WalletConnect = ({ onConnect, className = '' }) => {
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-700"
           >
-            Install MetaMask
+            MetaMask
+          </a>
+          {', '}
+          <a 
+            href="https://rabby.io/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Rabby
           </a>
           {' or '}
           <a 
