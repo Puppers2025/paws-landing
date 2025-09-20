@@ -3,11 +3,15 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag, FaArrowLeft } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
+import { FaTwitter, FaTelegramPlane, FaDiscord, FaShoppingBag, FaArrowLeft, FaWallet } from 'react-icons/fa'
 import { InputValidator } from '../../../lib/security'
+import { useWalletAuth } from '../../hooks/useWalletAuth'
+import WalletConnect from '../../components/WalletConnect'
 
 export default function AuthTabs() {
   const [tab, setTab] = useState('signin')
+  const [authMethod, setAuthMethod] = useState('traditional') // 'traditional' or 'wallet'
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -16,6 +20,8 @@ export default function AuthTabs() {
   })
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const { isConnected, address, isAuthenticating, isAuthenticated, user, authenticate, logout } = useWalletAuth()
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -59,6 +65,28 @@ export default function AuthTabs() {
     return Object.keys(newErrors).length === 0
   }
 
+  const handleWalletConnect = async (connectedAddress) => {
+    if (connectedAddress) {
+      try {
+        setErrors({})
+        const result = await authenticate()
+        
+        if (result.user) {
+          // Check if this is a new user or existing user
+          if (result.user.nftCount === 0 && result.user.level === 1) {
+            // New user - redirect to getting started
+            router.push('/pages/get-started')
+          } else {
+            // Existing user - redirect to dashboard
+            router.push('/dashboard')
+          }
+        }
+      } catch (err) {
+        setErrors({ general: err.message })
+      }
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -77,9 +105,9 @@ export default function AuthTabs() {
       
       // Redirect based on tab
       if (tab === 'signin') {
-        window.location.href = '/dashboard'
+        router.push('/dashboard')
       } else {
-        window.location.href = '/pages/get-started'
+        router.push('/pages/get-started')
       }
     } catch (error) {
       console.error('Form submission error:', error)
@@ -141,14 +169,84 @@ export default function AuthTabs() {
           </button>
         </div>
 
+        {/* Authentication Method Toggle */}
+        <div className="flex justify-center mb-6">
+          <div className="flex bg-zinc-800 rounded-lg p-1">
+            <button
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                authMethod === 'traditional'
+                  ? 'bg-red-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              onClick={() => setAuthMethod('traditional')}
+            >
+              Traditional
+            </button>
+            <button
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                authMethod === 'wallet'
+                  ? 'bg-red-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              onClick={() => setAuthMethod('wallet')}
+            >
+              <FaWallet className="inline mr-2" />
+              Wallet
+            </button>
+          </div>
+        </div>
+
         {/* Form Content */}
         <motion.div
-          key={tab}
+          key={`${tab}-${authMethod}`}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          {tab === 'signin' ? (
+          {authMethod === 'wallet' ? (
+            <div className="space-y-4">
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Connect Your Wallet
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  {tab === 'signin' 
+                    ? 'Connect your wallet to sign in to your account'
+                    : 'Connect your wallet to create a new account'
+                  }
+                </p>
+              </div>
+              
+              <WalletConnect onConnect={handleWalletConnect} />
+              
+              {isAuthenticating && (
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto"></div>
+                  <p className="mt-2 text-gray-400 text-sm">Authenticating...</p>
+                </div>
+              )}
+
+              {errors.general && (
+                <div className="p-3 bg-red-900/20 border border-red-500 rounded-md">
+                  <p className="text-red-400 text-sm">{errors.general}</p>
+                </div>
+              )}
+
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  Don't have a wallet?{' '}
+                  <a 
+                    href="https://metamask.io/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-red-400 hover:text-red-300"
+                  >
+                    Install MetaMask
+                  </a>
+                </p>
+              </div>
+            </div>
+          ) : tab === 'signin' ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <input 
