@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "MONGODB_URI": "@mongodb_uri",
+    "JWT_SECRET": "@jwt_secret",
+    "DISCORD_BOT_TOKEN": "@discord_bot_token",
+    "DISCORD_CLIENT_ID": "@discord_client_id",
+    "DISCORD_GUILD_ID": "@discord_guild_id"
+  },
+  "functions": {
+    "app/api/**/*.js": {
+      "maxDuration": 30
+    }
+  }
+}
