@@ -137,7 +137,8 @@ const discordRoleSchema = new mongoose.Schema({
 });
 
 // Indexes
-discordRoleSchema.index({ roleId: 1 });
+// Indexes for performance (unique indexes already defined in schema fields)
+// discordRoleSchema.index({ roleId: 1 }); // Already defined with unique: true
 discordRoleSchema.index({ levelRequired: 1 });
 discordRoleSchema.index({ guildId: 1 });
 discordRoleSchema.index({ priority: -1 });

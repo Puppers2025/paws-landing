@@ -191,9 +191,10 @@ const userSchema = new mongoose.Schema({
 });
 
 // Indexes for better performance
-userSchema.index({ walletAddress: 1 });
-userSchema.index({ discordId: 1 });
-userSchema.index({ username: 1 });
+// Indexes for performance (unique indexes already defined in schema fields)
+// userSchema.index({ walletAddress: 1 }); // Already defined with unique: true
+// userSchema.index({ discordId: 1 }); // Already defined with unique: true  
+// userSchema.index({ username: 1 }); // Already defined with unique: true
 userSchema.index({ level: -1 });
 userSchema.index({ totalScore: -1 });
 
@@ -233,14 +234,22 @@ userSchema.methods.addExperience = function(amount) {
 
 // Method to update Discord role based on level
 userSchema.methods.updateDiscordRole = function() {
-  if (this.level >= 31) {
-    this.discordRole = 'legend';
-  } else if (this.level >= 16) {
-    this.discordRole = 'alpha';
-  } else if (this.level >= 6) {
-    this.discordRole = 'adult';
+  if (this.level >= 400) {
+    this.discordRole = 'Pup Master';
+  } else if (this.level >= 200) {
+    this.discordRole = 'Pup Star';
+  } else if (this.level >= 150) {
+    this.discordRole = 'Pup Whisperer';
+  } else if (this.level >= 120) {
+    this.discordRole = 'Pup Owner';
+  } else if (this.level >= 50) {
+    this.discordRole = 'Pup Trainer';
+  } else if (this.level >= 20) {
+    this.discordRole = 'Puppy Training';
+  } else if (this.level >= 2) {
+    this.discordRole = 'Puppy';
   } else {
-    this.discordRole = 'puppy';
+    this.discordRole = 'Puppy';
   }
 };
 
