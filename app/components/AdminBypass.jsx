@@ -8,6 +8,8 @@ import { FaKey, FaUnlock, FaLock, FaHome, FaArrowLeft } from 'react-icons/fa'
 export default function AdminBypass() {
   const [key, setKey] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [showErrorModal, setShowErrorModal] = useState(false)
+  const [countdown, setCountdown] = useState(5)
   const [attemptedRoute, setAttemptedRoute] = useState('')
   const { enableAdminBypass, isAdmin, deactivateAdmin } = useAuth()
   const router = useRouter()
@@ -53,6 +55,21 @@ export default function AdminBypass() {
     }
   }, [isAdmin, showModal])
 
+  // Countdown effect for error modal
+  useEffect(() => {
+    let timer
+    if (showErrorModal && countdown > 0) {
+      timer = setTimeout(() => {
+        setCountdown(countdown - 1)
+      }, 1000)
+    } else if (showErrorModal && countdown === 0) {
+      setShowErrorModal(false)
+      setCountdown(5)
+      router.push('/')
+    }
+    return () => clearTimeout(timer)
+  }, [showErrorModal, countdown, router])
+
   const handleSubmit = (e) => {
     e.preventDefault()
     
@@ -68,9 +85,11 @@ export default function AdminBypass() {
         }
       }, 100)
     } else {
-      // Clear the key and show error, but don't activate admin mode
+      // Clear the key and show themed error modal
       setKey('')
-      alert('Invalid admin key')
+      setShowModal(false)
+      setShowErrorModal(true)
+      setCountdown(5)
     }
   }
 
@@ -184,6 +203,73 @@ export default function AdminBypass() {
             <p className="text-xs text-gray-500">
               Admin access required for development and testing
             </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show themed error modal for invalid admin key
+  if (showErrorModal) {
+    return (
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        {/* Background */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
+          style={{ 
+            backgroundImage: 'url("https://res.cloudinary.com/dncbk5sac/image/upload/v1758321417/paws-landing/paws-landing/backgrounds/Future9.png")', 
+            opacity: 0.25 
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70 backdrop-blur-sm z-0" />
+
+        {/* Error Modal Content */}
+        <div className="relative z-10 bg-zinc-900 border-2 border-red-600 rounded-xl p-8 max-w-md w-full mx-4 glow-box">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 border-4 border-red-600 rounded-full glow-box mb-4">
+              <FaLock className="text-3xl text-red-500" />
+            </div>
+            <h2 className="text-2xl font-primary text-white mb-2">Access Denied</h2>
+            <p className="text-gray-300 text-sm">
+              Invalid admin key provided. Access has been denied.
+            </p>
+          </div>
+
+          {/* Security Notice */}
+          <div className="bg-red-900/20 border border-red-600 rounded-lg p-4 mb-6">
+            <p className="text-sm text-red-300">
+              <strong>Security Notice:</strong> Invalid admin credentials detected. 
+              This attempt has been logged for security purposes.
+            </p>
+          </div>
+
+          {/* Countdown */}
+          <div className="text-center mb-6">
+            <p className="text-gray-400 text-sm">
+              Redirecting to homepage in <span className="text-red-500 font-bold text-lg">{countdown}</span> seconds...
+            </p>
+            <div className="w-full bg-zinc-800 rounded-full h-2 mt-2">
+              <div 
+                className="bg-red-500 h-2 rounded-full transition-all duration-1000"
+                style={{ width: `${(countdown / 5) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                setShowErrorModal(false)
+                setCountdown(5)
+                router.push('/')
+              }}
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
+            >
+              <FaHome className="text-sm" />
+              Go to Homepage Now
+            </button>
           </div>
         </div>
       </div>
