@@ -85,6 +85,13 @@ export function AuthProvider({ children }) {
     return false
   }
 
+  const deactivateAdmin = () => {
+    setIsAdmin(false)
+    setUser(null)
+    localStorage.removeItem('admin-bypass')
+    // Don't redirect, just clear admin state
+  }
+
   const value = {
     user,
     isLoading,
@@ -92,6 +99,7 @@ export function AuthProvider({ children }) {
     login,
     logout,
     enableAdminBypass,
+    deactivateAdmin,
     checkAuthStatus
   }
 

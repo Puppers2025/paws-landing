@@ -7,7 +7,7 @@ import { FaKey, FaUnlock, FaLock } from 'react-icons/fa'
 export default function AdminBypass() {
   const [key, setKey] = useState('')
   const [showForm, setShowForm] = useState(false)
-  const { enableAdminBypass, isAdmin } = useAuth()
+  const { enableAdminBypass, isAdmin, deactivateAdmin } = useAuth()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -19,12 +19,25 @@ export default function AdminBypass() {
     }
   }
 
+  const handleDeactivate = () => {
+    deactivateAdmin() // This will clear admin mode without redirecting
+  }
+
   if (isAdmin) {
     return (
       <div className="fixed top-4 right-4 z-50 bg-green-900 border border-green-500 rounded-lg p-3 text-white text-sm">
-        <div className="flex items-center gap-2">
-          <FaUnlock className="text-green-400" />
-          <span>Admin Mode Active</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <FaUnlock className="text-green-400" />
+            <span>Admin Mode Active</span>
+          </div>
+          <button
+            onClick={handleDeactivate}
+            className="px-2 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors"
+            title="Deactivate Admin Mode"
+          >
+            Deactivate
+          </button>
         </div>
       </div>
     )
