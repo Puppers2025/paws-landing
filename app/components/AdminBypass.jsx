@@ -18,24 +18,33 @@ export default function AdminBypass() {
       const currentPath = window.location.pathname
       const publicRoutes = ['/', '/auth/signup', '/auth/wallet', '/404']
       
-      if (!publicRoutes.includes(currentPath) && !isAdmin) {
+      // Only show modal if not on public route AND not admin AND not already showing modal
+      if (!publicRoutes.includes(currentPath) && !isAdmin && !showModal) {
         setAttemptedRoute(currentPath)
         setShowModal(true)
       }
     }
 
-    checkUnauthorizedAccess()
-  }, [isAdmin])
+    // Only check on mount, not every time isAdmin changes
+    if (!isAdmin) {
+      checkUnauthorizedAccess()
+    }
+  }, []) // Empty dependency array - only run on mount
+
+  // Hide modal when admin mode becomes active
+  useEffect(() => {
+    if (isAdmin && showModal) {
+      setShowModal(false)
+    }
+  }, [isAdmin, showModal])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (enableAdminBypass(key)) {
       setShowModal(false)
       setKey('')
-      // Redirect to the originally attempted route
-      if (attemptedRoute) {
-        router.push(attemptedRoute)
-      }
+      // Don't redirect - admin mode is now active and user can access the page
+      // The modal will close and admin indicator will appear
     } else {
       alert('Invalid admin key')
     }
