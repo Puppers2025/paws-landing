@@ -234,7 +234,26 @@ export default function GetStarted() {
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
                 placeholder="Enter your character's name"
-                className={`w-full px-4 py-3 bg-zinc-800 border ${selectedPupper.borderColor} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-${selectedPupper.themeColor}-500 focus:border-transparent`}
+                className={`w-full px-4 py-3 bg-zinc-800 border ${selectedPupper.borderColor} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-transparent`}
+                style={{
+                  '--tw-ring-color': selectedPupper.themeColor === 'yellow' ? '#eab308' : 
+                                   selectedPupper.themeColor === 'purple' ? '#a855f7' :
+                                   selectedPupper.themeColor === 'red' ? '#ef4444' :
+                                   selectedPupper.themeColor === 'cyan' ? '#06b6d4' :
+                                   selectedPupper.themeColor === 'green' ? '#22c55e' :
+                                   selectedPupper.themeColor === 'orange' ? '#f97316' : '#ef4444'
+                }}
+                onFocus={(e) => {
+                  e.target.style.boxShadow = `0 0 0 2px ${selectedPupper.themeColor === 'yellow' ? '#eab308' : 
+                                                           selectedPupper.themeColor === 'purple' ? '#a855f7' :
+                                                           selectedPupper.themeColor === 'red' ? '#ef4444' :
+                                                           selectedPupper.themeColor === 'cyan' ? '#06b6d4' :
+                                                           selectedPupper.themeColor === 'green' ? '#22c55e' :
+                                                           selectedPupper.themeColor === 'orange' ? '#f97316' : '#ef4444'}`
+                }}
+                onBlur={(e) => {
+                  e.target.style.boxShadow = 'none'
+                }}
                 maxLength={20}
                 autoFocus
               />
@@ -254,7 +273,35 @@ export default function GetStarted() {
               <button
                 onClick={handleConfirmSelection}
                 disabled={!customName.trim()}
-                className={`flex-1 px-6 py-3 bg-${selectedPupper.themeColor}-600 hover:bg-${selectedPupper.themeColor}-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2`}
+                className="flex-1 px-6 py-3 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                style={{
+                  backgroundColor: selectedPupper.themeColor === 'yellow' ? '#d97706' : 
+                                 selectedPupper.themeColor === 'purple' ? '#9333ea' :
+                                 selectedPupper.themeColor === 'red' ? '#dc2626' :
+                                 selectedPupper.themeColor === 'cyan' ? '#0891b2' :
+                                 selectedPupper.themeColor === 'green' ? '#16a34a' :
+                                 selectedPupper.themeColor === 'orange' ? '#ea580c' : '#dc2626'
+                }}
+                onMouseEnter={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = selectedPupper.themeColor === 'yellow' ? '#b45309' : 
+                                                   selectedPupper.themeColor === 'purple' ? '#7c3aed' :
+                                                   selectedPupper.themeColor === 'red' ? '#b91c1c' :
+                                                   selectedPupper.themeColor === 'cyan' ? '#0e7490' :
+                                                   selectedPupper.themeColor === 'green' ? '#15803d' :
+                                                   selectedPupper.themeColor === 'orange' ? '#c2410c' : '#b91c1c'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!e.target.disabled) {
+                    e.target.style.backgroundColor = selectedPupper.themeColor === 'yellow' ? '#d97706' : 
+                                                   selectedPupper.themeColor === 'purple' ? '#9333ea' :
+                                                   selectedPupper.themeColor === 'red' ? '#dc2626' :
+                                                   selectedPupper.themeColor === 'cyan' ? '#0891b2' :
+                                                   selectedPupper.themeColor === 'green' ? '#16a34a' :
+                                                   selectedPupper.themeColor === 'orange' ? '#ea580c' : '#dc2626'
+                  }
+                }}
               >
                 <FaCheck className="text-sm" />
                 Go to Dashboard
