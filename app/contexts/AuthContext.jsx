@@ -23,11 +23,15 @@ export function AuthProvider({ children }) {
     try {
       // Check for admin bypass
       const adminKey = localStorage.getItem('admin-bypass')
-      if (adminKey === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) {
+      if (adminKey && adminKey === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) {
+        console.log('Valid admin key found in localStorage, activating admin mode')
         setIsAdmin(true)
         setUser({ isAdmin: true, walletAddress: 'admin' })
         setIsLoading(false)
         return
+      } else if (adminKey) {
+        console.log('Invalid admin key found in localStorage, clearing it')
+        localStorage.removeItem('admin-bypass')
       }
 
       // Check for auth token
@@ -76,12 +80,18 @@ export function AuthProvider({ children }) {
   }
 
   const enableAdminBypass = (key) => {
+    console.log('enableAdminBypass called with key:', key)
+    console.log('Expected key:', process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
+    console.log('Keys match:', key === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
+    
     if (key === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) {
+      console.log('Admin key is valid, setting admin mode')
       localStorage.setItem('admin-bypass', key)
       setIsAdmin(true)
       setUser({ isAdmin: true, walletAddress: 'admin' })
       return true
     }
+    console.log('Admin key is invalid, not setting admin mode')
     return false
   }
 

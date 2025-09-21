@@ -40,12 +40,19 @@ export default function AdminBypass() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log('Attempting admin key:', key)
+    console.log('Expected key:', process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
+    
     if (enableAdminBypass(key)) {
+      console.log('Admin key accepted, activating admin mode')
       setShowModal(false)
       setKey('')
       // Don't redirect - admin mode is now active and user can access the page
       // The modal will close and admin indicator will appear
     } else {
+      console.log('Invalid admin key provided')
+      // Clear the key and show error, but don't activate admin mode
+      setKey('')
       alert('Invalid admin key')
     }
   }
