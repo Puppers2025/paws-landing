@@ -18,7 +18,7 @@ import {
 const puppers = [
   {
     name: 'Bolt',
-    image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425730/paws-landing/paws-landing/puppers/bolt.jpg',
+    image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425747/paws-landing/paws-landing/puppers/rexx.jpg',
     title: 'Speed Demon',
     description: 'This pupper craves fast-paced challenges and reflex-driven games.',
     icon: <FaBolt className="text-red-500 text-3xl" />,
@@ -53,7 +53,7 @@ const puppers = [
   },
   {
     name: 'Rexx',
-    image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425747/paws-landing/paws-landing/puppers/rexx.jpg',
+    image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425730/paws-landing/paws-landing/puppers/bolt.jpg',
     title: 'Alpha Tracker',
     description: 'Lead your pack through quests and dominate the leaderboard.',
     icon: <FaPaw className="text-red-500 text-3xl" />,
