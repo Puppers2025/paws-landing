@@ -30,13 +30,11 @@ export function AuthProvider({ children }) {
       
       if ((adminKey && adminKey === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) ||
           (adminCookie && adminCookie === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)) {
-        console.log('Valid admin key found, activating admin mode')
         setIsAdmin(true)
         setUser({ isAdmin: true, walletAddress: 'admin' })
         setIsLoading(false)
         return
       } else if (adminKey || adminCookie) {
-        console.log('Invalid admin key found, clearing it')
         localStorage.removeItem('admin-bypass')
         document.cookie = 'admin-bypass=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
       }
@@ -87,12 +85,7 @@ export function AuthProvider({ children }) {
   }
 
   const enableAdminBypass = (key) => {
-    console.log('enableAdminBypass called with key:', key)
-    console.log('Expected key:', process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
-    console.log('Keys match:', key === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
-    
     if (key === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) {
-      console.log('Admin key is valid, setting admin mode')
       localStorage.setItem('admin-bypass', key)
       // Set cookie for middleware
       document.cookie = `admin-bypass=${key}; path=/; max-age=86400` // 24 hours
@@ -100,7 +93,6 @@ export function AuthProvider({ children }) {
       setUser({ isAdmin: true, walletAddress: 'admin' })
       return true
     }
-    console.log('Admin key is invalid, not setting admin mode')
     return false
   }
 

@@ -18,19 +18,11 @@ export default function AdminBypass() {
       const currentPath = window.location.pathname
       const publicRoutes = ['/', '/auth/signup', '/auth/wallet', '/404']
       
-      console.log('🔍 Checking route:', currentPath)
-      console.log('🔍 Is admin:', isAdmin)
-      console.log('🔍 Show modal:', showModal)
-      console.log('🔍 Is public route:', publicRoutes.includes(currentPath))
-      
       // Show modal for ANY route that's not in the public list
       // This ensures it works for all current and future protected routes
       if (!publicRoutes.includes(currentPath) && !isAdmin && !showModal) {
-        console.log('🚨 Unauthorized access detected for route:', currentPath)
         setAttemptedRoute(currentPath)
         setShowModal(true)
-      } else {
-        console.log('✅ Route is allowed or admin is active')
       }
     }
 
@@ -39,7 +31,6 @@ export default function AdminBypass() {
 
     // Listen for route changes (for client-side navigation)
     const handleRouteChange = () => {
-      console.log('🔄 Route change detected')
       checkUnauthorizedAccess()
     }
 
@@ -47,10 +38,7 @@ export default function AdminBypass() {
     window.addEventListener('popstate', handleRouteChange)
     
     // Also check periodically in case of programmatic navigation
-    const interval = setInterval(() => {
-      console.log('⏰ Periodic check')
-      checkUnauthorizedAccess()
-    }, 2000) // Increased interval to reduce spam
+    const interval = setInterval(checkUnauthorizedAccess, 2000)
 
     return () => {
       window.removeEventListener('popstate', handleRouteChange)
@@ -67,12 +55,8 @@ export default function AdminBypass() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('Attempting admin key:', key)
-    console.log('Expected key:', process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
-    console.log('Attempted route:', attemptedRoute)
     
     if (enableAdminBypass(key)) {
-      console.log('Admin key accepted, activating admin mode')
       setShowModal(false)
       setKey('')
       
@@ -80,14 +64,10 @@ export default function AdminBypass() {
       // to ensure admin mode is fully activated
       setTimeout(() => {
         if (attemptedRoute && attemptedRoute !== window.location.pathname) {
-          console.log('Redirecting to attempted route:', attemptedRoute)
           router.push(attemptedRoute)
-        } else {
-          console.log('Already on attempted route or no route to redirect to')
         }
       }, 100)
     } else {
-      console.log('Invalid admin key provided')
       // Clear the key and show error, but don't activate admin mode
       setKey('')
       alert('Invalid admin key')
@@ -197,32 +177,12 @@ export default function AdminBypass() {
               </button>
             </div>
             
-            {/* Debug Info */}
-            <div className="mt-4 p-2 bg-zinc-800 rounded text-xs text-gray-400">
-              <p>Current route: {window.location.pathname}</p>
-              <p>Attempted route: {attemptedRoute || 'None'}</p>
-              <p>Is admin: {isAdmin ? 'Yes' : 'No'}</p>
-              <p>Show modal: {showModal ? 'Yes' : 'No'}</p>
-              <button
-                onClick={() => {
-                  console.log('🧪 Manual trigger test')
-                  setAttemptedRoute(window.location.pathname)
-                  setShowModal(true)
-                }}
-                className="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs"
-              >
-                Test Modal
-              </button>
-            </div>
           </form>
 
           {/* Footer */}
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
               Admin access required for development and testing
-            </p>
-            <p className="text-xs text-gray-600 mt-2">
-              Debug: Expected key starts with: {process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY?.slice(0, 10)}...
             </p>
           </div>
         </div>
