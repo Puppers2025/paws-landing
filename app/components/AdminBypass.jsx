@@ -18,12 +18,19 @@ export default function AdminBypass() {
       const currentPath = window.location.pathname
       const publicRoutes = ['/', '/auth/signup', '/auth/wallet', '/404']
       
+      console.log('🔍 Checking route:', currentPath)
+      console.log('🔍 Is admin:', isAdmin)
+      console.log('🔍 Show modal:', showModal)
+      console.log('🔍 Is public route:', publicRoutes.includes(currentPath))
+      
       // Show modal for ANY route that's not in the public list
       // This ensures it works for all current and future protected routes
       if (!publicRoutes.includes(currentPath) && !isAdmin && !showModal) {
-        console.log('Unauthorized access detected for route:', currentPath)
+        console.log('🚨 Unauthorized access detected for route:', currentPath)
         setAttemptedRoute(currentPath)
         setShowModal(true)
+      } else {
+        console.log('✅ Route is allowed or admin is active')
       }
     }
 
@@ -32,6 +39,7 @@ export default function AdminBypass() {
 
     // Listen for route changes (for client-side navigation)
     const handleRouteChange = () => {
+      console.log('🔄 Route change detected')
       checkUnauthorizedAccess()
     }
 
@@ -39,7 +47,10 @@ export default function AdminBypass() {
     window.addEventListener('popstate', handleRouteChange)
     
     // Also check periodically in case of programmatic navigation
-    const interval = setInterval(checkUnauthorizedAccess, 1000)
+    const interval = setInterval(() => {
+      console.log('⏰ Periodic check')
+      checkUnauthorizedAccess()
+    }, 2000) // Increased interval to reduce spam
 
     return () => {
       window.removeEventListener('popstate', handleRouteChange)
@@ -187,12 +198,22 @@ export default function AdminBypass() {
             </div>
             
             {/* Debug Info */}
-            {attemptedRoute && (
-              <div className="mt-4 p-2 bg-zinc-800 rounded text-xs text-gray-400">
-                <p>Attempted route: {attemptedRoute}</p>
-                <p>Current route: {window.location.pathname}</p>
-              </div>
-            )}
+            <div className="mt-4 p-2 bg-zinc-800 rounded text-xs text-gray-400">
+              <p>Current route: {window.location.pathname}</p>
+              <p>Attempted route: {attemptedRoute || 'None'}</p>
+              <p>Is admin: {isAdmin ? 'Yes' : 'No'}</p>
+              <p>Show modal: {showModal ? 'Yes' : 'No'}</p>
+              <button
+                onClick={() => {
+                  console.log('🧪 Manual trigger test')
+                  setAttemptedRoute(window.location.pathname)
+                  setShowModal(true)
+                }}
+                className="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs"
+              >
+                Test Modal
+              </button>
+            </div>
           </form>
 
           {/* Footer */}
