@@ -89,7 +89,7 @@ export function AuthProvider({ children }) {
     setIsAdmin(false)
     setUser(null)
     localStorage.removeItem('admin-bypass')
-    // Don't redirect, just clear admin state
+    // Will redirect via component
   }
 
   const value = {
