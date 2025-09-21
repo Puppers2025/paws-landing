@@ -25,14 +25,24 @@ const puppers = [
     image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425747/paws-landing/paws-landing/puppers/rexx.jpg',
     title: 'Speed Demon',
     description: 'This pupper craves fast-paced challenges and reflex-driven games.',
-    icon: <FaBolt className="text-red-500 text-3xl" />,
+    icon: <FaBolt className="text-yellow-500 text-3xl" />,
+    themeColor: 'yellow',
+    borderColor: 'border-yellow-500',
+    bgColor: 'bg-yellow-500/10',
+    glowColor: 'shadow-yellow-500/50',
+    textColor: 'text-yellow-500',
   },
   {
     name: 'Luna',
     image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425731/paws-landing/paws-landing/puppers/luna.jpg',
     title: 'Mystic Wanderer',
     description: 'Explore deep lore and hidden truths through her spiritual path.',
-    icon: <FaMapMarkedAlt className="text-red-500 text-3xl" />,
+    icon: <FaMapMarkedAlt className="text-purple-500 text-3xl" />,
+    themeColor: 'purple',
+    borderColor: 'border-purple-500',
+    bgColor: 'bg-purple-500/10',
+    glowColor: 'shadow-purple-500/50',
+    textColor: 'text-purple-500',
   },
   {
     name: 'Maxx',
@@ -40,27 +50,47 @@ const puppers = [
     title: 'Battle Born',
     description: 'Gear up for tactical duels and intense arena clashes.',
     icon: <FaCogs className="text-red-500 text-3xl" />,
+    themeColor: 'red',
+    borderColor: 'border-red-500',
+    bgColor: 'bg-red-500/10',
+    glowColor: 'shadow-red-500/50',
+    textColor: 'text-red-500',
   },
   {
     name: 'Nova',
     image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425744/paws-landing/paws-landing/puppers/nova.jpg',
     title: 'Galactic Scout',
     description: 'Blast off into exploration mode and interdimensional discovery.',
-    icon: <FaRocket className="text-red-500 text-3xl" />,
+    icon: <FaRocket className="text-cyan-500 text-3xl" />,
+    themeColor: 'cyan',
+    borderColor: 'border-cyan-500',
+    bgColor: 'bg-cyan-500/10',
+    glowColor: 'shadow-cyan-500/50',
+    textColor: 'text-cyan-500',
   },
   {
     name: 'Zeek',
     image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425746/paws-landing/paws-landing/puppers/zeek.jpg',
     title: 'Loyal Healer',
     description: 'Support your squad with compassion and powerful restoration.',
-    icon: <FaHeartbeat className="text-red-500 text-3xl" />,
+    icon: <FaHeartbeat className="text-green-500 text-3xl" />,
+    themeColor: 'green',
+    borderColor: 'border-green-500',
+    bgColor: 'bg-green-500/10',
+    glowColor: 'shadow-green-500/50',
+    textColor: 'text-green-500',
   },
   {
     name: 'Rexx',
     image: 'https://res.cloudinary.com/dncbk5sac/image/upload/v1758425730/paws-landing/paws-landing/puppers/bolt.jpg',
     title: 'Alpha Tracker',
     description: 'Lead your pack through quests and dominate the leaderboard.',
-    icon: <FaPaw className="text-red-500 text-3xl" />,
+    icon: <FaPaw className="text-orange-500 text-3xl" />,
+    themeColor: 'orange',
+    borderColor: 'border-orange-500',
+    bgColor: 'bg-orange-500/10',
+    glowColor: 'shadow-orange-500/50',
+    textColor: 'text-orange-500',
   },
 ]
 
@@ -122,11 +152,11 @@ export default function GetStarted() {
             {puppers.map((pup, idx) => (
               <div
                 key={idx}
-                className="bg-zinc-900 border border-red-600 rounded-xl p-6 shadow-lg flex flex-col items-center text-center glow-box"
+                className={`bg-zinc-900 border ${pup.borderColor} rounded-xl p-6 shadow-lg flex flex-col items-center text-center glow-box ${pup.bgColor} hover:${pup.glowColor} transition-all duration-300`}
               >
                 <button
                   onClick={() => handlePupperSelect(pup)}
-                  className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-red-500 cursor-pointer hover:scale-105 transition-transform overflow-hidden"
+                  className={`w-32 h-32 rounded-full object-cover mb-4 border-4 ${pup.borderColor} cursor-pointer hover:scale-105 transition-transform overflow-hidden hover:${pup.glowColor}`}
                 >
                   <img
                     src={pup.image}
@@ -134,9 +164,9 @@ export default function GetStarted() {
                     className="w-full h-full object-cover"
                   />
                 </button>
-                <h2 className="text-xl font-primary mb-2">{pup.name}</h2>
+                <h2 className={`text-xl font-primary mb-2 ${pup.textColor}`}>{pup.name}</h2>
                 <div className="mt-4">
-                  <h3 className="text-lg font-button mb-1">{pup.title}</h3>
+                  <h3 className={`text-lg font-button mb-1 ${pup.textColor}`}>{pup.title}</h3>
                   <p className="text-sm text-gray-300 mb-4">{pup.description}</p>
                   {pup.icon}
                 </div>
@@ -171,10 +201,10 @@ export default function GetStarted() {
       {/* Character Customization Modal */}
       {showModal && selectedPupper && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border-2 border-red-600 rounded-xl p-8 max-w-md w-full mx-4 glow-box">
+          <div className={`bg-zinc-900 border-2 ${selectedPupper.borderColor} rounded-xl p-8 max-w-md w-full mx-4 glow-box ${selectedPupper.bgColor}`}>
             {/* Modal Header */}
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-primary text-white">Customize Your Pupper</h2>
+              <h2 className={`text-2xl font-primary ${selectedPupper.textColor}`}>Customize Your Pupper</h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-400 hover:text-white transition-colors"
@@ -188,9 +218,9 @@ export default function GetStarted() {
               <img
                 src={selectedPupper.image}
                 alt={selectedPupper.name}
-                className="w-24 h-24 rounded-full object-cover border-4 border-red-500 mb-4"
+                className={`w-24 h-24 rounded-full object-cover border-4 ${selectedPupper.borderColor} mb-4`}
               />
-              <h3 className="text-lg font-primary text-white">{selectedPupper.title}</h3>
+              <h3 className={`text-lg font-primary ${selectedPupper.textColor}`}>{selectedPupper.title}</h3>
               <p className="text-sm text-gray-300 text-center">{selectedPupper.description}</p>
             </div>
 
@@ -204,7 +234,7 @@ export default function GetStarted() {
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
                 placeholder="Enter your character's name"
-                className="w-full px-4 py-3 bg-zinc-800 border border-red-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className={`w-full px-4 py-3 bg-zinc-800 border ${selectedPupper.borderColor} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-${selectedPupper.themeColor}-500 focus:border-transparent`}
                 maxLength={20}
                 autoFocus
               />
@@ -224,7 +254,7 @@ export default function GetStarted() {
               <button
                 onClick={handleConfirmSelection}
                 disabled={!customName.trim()}
-                className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                className={`flex-1 px-6 py-3 bg-${selectedPupper.themeColor}-600 hover:bg-${selectedPupper.themeColor}-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2`}
               >
                 <FaCheck className="text-sm" />
                 Go to Dashboard
