@@ -20,6 +20,7 @@ export default function AdminBypass() {
       
       // Only show modal if not on public route AND not admin AND not already showing modal
       if (!publicRoutes.includes(currentPath) && !isAdmin && !showModal) {
+        console.log('Unauthorized access detected for route:', currentPath)
         setAttemptedRoute(currentPath)
         setShowModal(true)
       }
@@ -42,13 +43,23 @@ export default function AdminBypass() {
     e.preventDefault()
     console.log('Attempting admin key:', key)
     console.log('Expected key:', process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)
+    console.log('Attempted route:', attemptedRoute)
     
     if (enableAdminBypass(key)) {
       console.log('Admin key accepted, activating admin mode')
       setShowModal(false)
       setKey('')
-      // Don't redirect - admin mode is now active and user can access the page
-      // The modal will close and admin indicator will appear
+      
+      // Redirect to the originally attempted route after a short delay
+      // to ensure admin mode is fully activated
+      setTimeout(() => {
+        if (attemptedRoute && attemptedRoute !== window.location.pathname) {
+          console.log('Redirecting to attempted route:', attemptedRoute)
+          router.push(attemptedRoute)
+        } else {
+          console.log('Already on attempted route or no route to redirect to')
+        }
+      }, 100)
     } else {
       console.log('Invalid admin key provided')
       // Clear the key and show error, but don't activate admin mode
@@ -154,6 +165,14 @@ export default function AdminBypass() {
                 Unlock Access
               </button>
             </div>
+            
+            {/* Debug Info */}
+            {attemptedRoute && (
+              <div className="mt-4 p-2 bg-zinc-800 rounded text-xs text-gray-400">
+                <p>Attempted route: {attemptedRoute}</p>
+                <p>Current route: {window.location.pathname}</p>
+              </div>
+            )}
           </form>
 
           {/* Footer */}
