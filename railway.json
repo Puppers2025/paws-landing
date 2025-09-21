@@ -1,0 +1,29 @@
+{
+  "name": "puppers-discord-bots",
+  "description": "Discord bots for Puppers community and game notifications",
+  "version": "1.0.0",
+  "main": "railway-discord-bots.js",
+  "scripts": {
+    "start": "node railway-discord-bots.js",
+    "dev": "node railway-discord-bots.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^17.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "railway": {
+    "build": {
+      "builder": "NIXPACKS"
+    },
+    "deploy": {
+      "startCommand": "node railway-discord-bots.js",
+      "healthcheckPath": "/health",
+      "healthcheckTimeout": 100,
+      "restartPolicyType": "ON_FAILURE",
+      "restartPolicyMaxRetries": 10
+    }
+  }
+}
