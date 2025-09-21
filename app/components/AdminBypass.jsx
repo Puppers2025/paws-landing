@@ -18,7 +18,8 @@ export default function AdminBypass() {
       const currentPath = window.location.pathname
       const publicRoutes = ['/', '/auth/signup', '/auth/wallet', '/404']
       
-      // Only show modal if not on public route AND not admin AND not already showing modal
+      // Show modal for ANY route that's not in the public list
+      // This ensures it works for all current and future protected routes
       if (!publicRoutes.includes(currentPath) && !isAdmin && !showModal) {
         console.log('Unauthorized access detected for route:', currentPath)
         setAttemptedRoute(currentPath)
@@ -26,11 +27,25 @@ export default function AdminBypass() {
       }
     }
 
-    // Only check on mount, not every time isAdmin changes
-    if (!isAdmin) {
+    // Check on mount
+    checkUnauthorizedAccess()
+
+    // Listen for route changes (for client-side navigation)
+    const handleRouteChange = () => {
       checkUnauthorizedAccess()
     }
-  }, []) // Empty dependency array - only run on mount
+
+    // Listen for popstate events (back/forward navigation)
+    window.addEventListener('popstate', handleRouteChange)
+    
+    // Also check periodically in case of programmatic navigation
+    const interval = setInterval(checkUnauthorizedAccess, 1000)
+
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange)
+      clearInterval(interval)
+    }
+  }, [isAdmin, showModal]) // Check when admin status or modal state changes
 
   // Hide modal when admin mode becomes active
   useEffect(() => {
@@ -125,9 +140,14 @@ export default function AdminBypass() {
               This area requires admin privileges to access.
             </p>
             {attemptedRoute && (
-              <p className="text-red-400 text-xs mt-2">
-                Attempted to access: {attemptedRoute}
-              </p>
+              <div className="mt-3 p-3 bg-zinc-800 rounded-lg border border-red-600">
+                <p className="text-red-400 text-sm font-medium">
+                  🔒 Protected Route: {attemptedRoute}
+                </p>
+                <p className="text-gray-400 text-xs mt-1">
+                  Enter admin key to unlock access to this page
+                </p>
+              </div>
             )}
           </div>
 
