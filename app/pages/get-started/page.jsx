@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   FaMapMarkedAlt,
   FaHeartbeat,
@@ -13,6 +15,8 @@ import {
   FaDiscord,
   FaShoppingBag,
   FaArrowLeft,
+  FaTimes,
+  FaCheck,
 } from 'react-icons/fa'
 
 const puppers = [
@@ -61,6 +65,36 @@ const puppers = [
 ]
 
 export default function GetStarted() {
+  const [selectedPupper, setSelectedPupper] = useState(null)
+  const [customName, setCustomName] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const router = useRouter()
+
+  const handlePupperSelect = (pupper) => {
+    setSelectedPupper(pupper)
+    setCustomName(pupper.name) // Default to original name
+    setShowModal(true)
+  }
+
+  const handleConfirmSelection = () => {
+    if (customName.trim()) {
+      // Store the selected character and custom name in localStorage
+      localStorage.setItem('selectedPupper', JSON.stringify({
+        ...selectedPupper,
+        customName: customName.trim()
+      }))
+      
+      // Redirect to dashboard
+      router.push('/dashboard')
+    }
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setSelectedPupper(null)
+    setCustomName('')
+  }
+
   return (
     <div className="relative min-h-screen bg-black text-white px-4 py-10 overflow-hidden">
       {/* ✅ Back Button */}
@@ -90,13 +124,16 @@ export default function GetStarted() {
                 key={idx}
                 className="bg-zinc-900 border border-red-600 rounded-xl p-6 shadow-lg flex flex-col items-center text-center glow-box"
               >
-                <Link href="/dashboard">
+                <button
+                  onClick={() => handlePupperSelect(pup)}
+                  className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-red-500 cursor-pointer hover:scale-105 transition-transform overflow-hidden"
+                >
                   <img
                     src={pup.image}
                     alt={pup.name}
-                    className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-red-500 cursor-pointer hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover"
                   />
-                </Link>
+                </button>
                 <h2 className="text-xl font-primary mb-2">{pup.name}</h2>
                 <div className="mt-4">
                   <h3 className="text-lg font-button mb-1">{pup.title}</h3>
@@ -130,6 +167,72 @@ export default function GetStarted() {
           ))}
         </div>
       </div>
+
+      {/* Character Customization Modal */}
+      {showModal && selectedPupper && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border-2 border-red-600 rounded-xl p-8 max-w-md w-full mx-4 glow-box">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-primary text-white">Customize Your Pupper</h2>
+              <button
+                onClick={handleCloseModal}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <FaTimes className="text-xl" />
+              </button>
+            </div>
+
+            {/* Character Preview */}
+            <div className="flex flex-col items-center mb-6">
+              <img
+                src={selectedPupper.image}
+                alt={selectedPupper.name}
+                className="w-24 h-24 rounded-full object-cover border-4 border-red-500 mb-4"
+              />
+              <h3 className="text-lg font-primary text-white">{selectedPupper.title}</h3>
+              <p className="text-sm text-gray-300 text-center">{selectedPupper.description}</p>
+            </div>
+
+            {/* Name Input */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Character Name
+              </label>
+              <input
+                type="text"
+                value={customName}
+                onChange={(e) => setCustomName(e.target.value)}
+                placeholder="Enter your character's name"
+                className="w-full px-4 py-3 bg-zinc-800 border border-red-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                maxLength={20}
+                autoFocus
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                This name will appear in your dashboard
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <button
+                onClick={handleCloseModal}
+                className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmSelection}
+                disabled={!customName.trim()}
+                className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+              >
+                <FaCheck className="text-sm" />
+                Go to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
