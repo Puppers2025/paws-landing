@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '../../../../lib/database';
 import User from '../../../../models/User';
-import discordBotService from '../../../../lib/discord-bot-service';
+import DiscordWebhookService from '../../../../lib/discord-webhook';
 import jwt from 'jsonwebtoken';
 
 // Middleware to verify JWT token
@@ -42,15 +42,13 @@ export async function POST(request) {
       );
     }
     
-    // Initialize Discord bot if not already connected
-    if (!discordBotService.isBotConnected()) {
-      const initialized = await discordBotService.initialize();
-      if (!initialized) {
-        return NextResponse.json(
-          { error: 'Failed to initialize Discord bot' },
-          { status: 500 }
-        );
-      }
+    // Check if Discord webhook is configured
+    const webhookService = new DiscordWebhookService();
+    if (!webhookService.isConfigured()) {
+      return NextResponse.json(
+        { error: 'Discord webhook not configured' },
+        { status: 500 }
+      );
     }
     
     let result = {};
@@ -58,7 +56,7 @@ export async function POST(request) {
     switch (testType) {
       case 'levelUp':
         // Test level up notification
-        const levelUpResult = await user.addExperience(amount || 100, discordBotService.getClient());
+        const levelUpResult = await user.addExperience(amount || 100);
         result = {
           success: true,
           message: 'Level up notification sent to Discord',
@@ -73,7 +71,7 @@ export async function POST(request) {
         
         if (roleChangeResult.roleChanged) {
           await user.save();
-          await discordBotService.postRoleChangeNotification(user, roleChangeResult);
+          await webhookService.postRoleChangeNotification(user, roleChangeResult);
           result = {
             success: true,
             message: 'Role change notification sent to Discord',
@@ -95,7 +93,7 @@ export async function POST(request) {
         
         if (user.nftCount !== oldNftCount) {
           await user.save();
-          await discordBotService.postRoleChangeNotification(user, {
+          await webhookService.postRoleChangeNotification(user, {
             oldRole: oldNftCount < 1 ? 'None' : 'Previous Role',
             newRole: user.discordRole || 'Puppy',
             level: user.level,
@@ -132,21 +130,22 @@ export async function POST(request) {
   }
 }
 
-// GET - Get Discord bot status
+// GET - Get Discord webhook status
 export async function GET() {
   try {
-    const isConnected = discordBotService.isBotConnected();
+    const webhookService = new DiscordWebhookService();
+    const isConfigured = webhookService.isConfigured();
     
     return NextResponse.json({
       success: true,
-      discordBot: {
-        connected: isConnected,
-        status: isConnected ? 'Online' : 'Offline'
+      discordWebhook: {
+        configured: isConfigured,
+        status: isConfigured ? 'Ready' : 'Not Configured'
       }
     });
     
   } catch (error) {
-    console.error('Get Discord bot status error:', error);
+    console.error('Get Discord webhook status error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -233,18 +233,18 @@ userSchema.methods.addExperience = function(amount, discordClient = null) {
       gameRoleUpdate
     };
 
-    // Post Discord notifications if client is provided and user leveled up
-    if (discordClient && levelUps > 0) {
+    // Post Discord notifications if user leveled up
+    if (levelUps > 0) {
       try {
-        const { DiscordLevelNotifications } = await import('../lib/discord-level-notifications.js');
-        const levelNotifications = new DiscordLevelNotifications();
+        const { DiscordWebhookService } = await import('../lib/discord-webhook.js');
+        const webhookService = new DiscordWebhookService();
         
         // Post level up notification
-        await levelNotifications.postLevelUpNotification(discordClient, this, result);
+        await webhookService.postLevelUpNotification(this, result);
         
         // Post role change notification if applicable
         if (gameRoleUpdate && gameRoleUpdate.roleChanged) {
-          await levelNotifications.postRoleChangeNotification(discordClient, this, gameRoleUpdate);
+          await webhookService.postRoleChangeNotification(this, gameRoleUpdate);
         }
       } catch (error) {
         console.error('Error posting Discord notifications:', error);

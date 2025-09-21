@@ -3,7 +3,7 @@ import connectDB from '../../../../lib/database';
 import User from '../../../../models/User';
 import DiscordRole from '../../../../models/DiscordRole';
 import { getUserRoleStatus, getAllRoles } from '../../../../lib/discord-role-mapping';
-import discordBotService from '../../../../lib/discord-bot-service';
+import DiscordWebhookService from '../../../../lib/discord-webhook';
 import jwt from 'jsonwebtoken';
 
 // Middleware to verify JWT token
@@ -115,13 +115,10 @@ export async function POST(request) {
     // Post Discord notification if role changed
     if (user.discordRole !== oldDiscordRole) {
       try {
-        // Initialize Discord bot if not already connected
-        if (!discordBotService.isBotConnected()) {
-          await discordBotService.initialize();
-        }
+        const webhookService = new DiscordWebhookService();
         
         // Post role change notification
-        await discordBotService.postRoleChangeNotification(user, {
+        await webhookService.postRoleChangeNotification(user, {
           oldRole: oldDiscordRole,
           newRole: user.discordRole,
           level: user.level,
