@@ -3,6 +3,7 @@ import connectDB from '../../../../lib/database';
 import User from '../../../../models/User';
 import DiscordRole from '../../../../models/DiscordRole';
 import { getUserRoleStatus, getAllRoles } from '../../../../lib/discord-role-mapping';
+import discordBotService from '../../../../lib/discord-bot-service';
 import jwt from 'jsonwebtoken';
 
 // Middleware to verify JWT token
@@ -96,6 +97,10 @@ export async function POST(request) {
       );
     }
     
+    // Store old values for comparison
+    const oldNftCount = user.nftCount;
+    const oldDiscordRole = user.discordRole;
+    
     // Update NFT count
     user.nftCount = nftCount;
     
@@ -106,6 +111,27 @@ export async function POST(request) {
     }
     
     await user.save();
+    
+    // Post Discord notification if role changed
+    if (user.discordRole !== oldDiscordRole) {
+      try {
+        // Initialize Discord bot if not already connected
+        if (!discordBotService.isBotConnected()) {
+          await discordBotService.initialize();
+        }
+        
+        // Post role change notification
+        await discordBotService.postRoleChangeNotification(user, {
+          oldRole: oldDiscordRole,
+          newRole: user.discordRole,
+          level: user.level,
+          nftCount: user.nftCount
+        });
+      } catch (error) {
+        console.error('Error posting Discord notification:', error);
+        // Don't fail the request if Discord notification fails
+      }
+    }
     
     return NextResponse.json({
       success: true,

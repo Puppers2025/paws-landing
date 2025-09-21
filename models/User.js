@@ -205,11 +205,12 @@ userSchema.virtual('experiencePercentage').get(function() {
 });
 
 // Method to add experience and handle leveling up
-userSchema.methods.addExperience = function(amount) {
+userSchema.methods.addExperience = function(amount, discordClient = null) {
   this.experience += amount;
   
   let levelUps = 0;
   let gameRoleUpdate = null;
+  let oldLevel = this.level;
   
   // Check for level up
   while (this.experience >= this.experienceToNextLevel) {
@@ -225,11 +226,34 @@ userSchema.methods.addExperience = function(amount) {
     gameRoleUpdate = this.updateGameRole();
   }
   
-  return this.save().then(() => ({
-    levelUps,
-    newLevel: this.level,
-    gameRoleUpdate
-  }));
+  return this.save().then(async () => {
+    const result = {
+      levelUps,
+      newLevel: this.level,
+      gameRoleUpdate
+    };
+
+    // Post Discord notifications if client is provided and user leveled up
+    if (discordClient && levelUps > 0) {
+      try {
+        const { DiscordLevelNotifications } = await import('../lib/discord-level-notifications.js');
+        const levelNotifications = new DiscordLevelNotifications();
+        
+        // Post level up notification
+        await levelNotifications.postLevelUpNotification(discordClient, this, result);
+        
+        // Post role change notification if applicable
+        if (gameRoleUpdate && gameRoleUpdate.roleChanged) {
+          await levelNotifications.postRoleChangeNotification(discordClient, this, gameRoleUpdate);
+        }
+      } catch (error) {
+        console.error('Error posting Discord notifications:', error);
+        // Don't throw - notification failure shouldn't stop the process
+      }
+    }
+
+    return result;
+  });
 };
 
 // Method to update Discord role based on level
