@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import {
   FaPaw,
   FaCompass,
@@ -13,11 +14,17 @@ import {
   FaTelegramPlane,
   FaDiscord,
   FaShoppingBag,
+  FaSignOutAlt,
 } from 'react-icons/fa'
 
 import { useOverviewModals } from '@/components/overview/hooks/overviewModals'
+import ProtectedRoute from '../components/ProtectedRoute'
+import { useAuth } from '../contexts/AuthContext'
 
-export default function Dashboard() {
+function DashboardContent() {
+  const { user, logout } = useAuth()
+  const [selectedPupper, setSelectedPupper] = useState(null)
+  
   const {
     openShop,
     openEnergy,
@@ -31,17 +38,40 @@ export default function Dashboard() {
     missionModal,
   } = useOverviewModals()
 
+  useEffect(() => {
+    // Load selected pupper from localStorage
+    const pupperData = localStorage.getItem('selectedPupper')
+    if (pupperData) {
+      setSelectedPupper(JSON.parse(pupperData))
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       {/* Top Status Bar */}
       <div className="w-full fixed top-0 left-0 right-0 bg-zinc-900 border-b border-red-600 z-30 px-4 py-3 flex justify-between items-center shadow-md">
         <div className="font-button text-sm sm:text-base">
-          👤 Name: <span className="text-red-500">Pupper001</span>
+          👤 Name: <span className="text-red-500">
+            {selectedPupper?.customName || user?.username || 'Pupper001'}
+          </span>
         </div>
-        <div className="font-button text-sm sm:text-base">⭐ Level: 3 → 4</div>
+        <div className="font-button text-sm sm:text-base">
+          ⭐ Level: {user?.level || 1} → {user?.level ? user.level + 1 : 2}
+        </div>
         <div className="font-button text-sm sm:text-base text-yellow-400">$PAWS: 1,250</div>
-        <div className="font-button text-sm sm:text-base">Wallet: 0xABC...123</div>
-        <div className="font-button text-sm sm:text-base bg-zinc-800 px-2 py-1 rounded-md">Global Chat</div>
+        <div className="font-button text-sm sm:text-base">
+          Wallet: {user?.walletAddress ? `${user.walletAddress.slice(0, 6)}...${user.walletAddress.slice(-4)}` : '0xABC...123'}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="font-button text-sm sm:text-base bg-zinc-800 px-2 py-1 rounded-md">Global Chat</div>
+          <button
+            onClick={logout}
+            className="text-red-500 hover:text-white transition-colors p-1"
+            title="Sign Out"
+          >
+            <FaSignOutAlt className="text-lg" />
+          </button>
+        </div>
       </div>
 
       <div className="flex pt-16 pb-20 overflow-hidden">
@@ -49,7 +79,7 @@ export default function Dashboard() {
         <aside className="w-64 bg-zinc-900 border-r border-red-600 p-6 flex flex-col justify-between">
           <div>
             <img
-              src="/images/bolt.jpg"
+              src={selectedPupper?.image || "/images/bolt.jpg"}
               alt="Profile"
               className="w-24 h-24 rounded-full mx-auto border-4 border-red-500 mb-6"
             />
@@ -177,5 +207,13 @@ export default function Dashboard() {
         </div>
       </nav>
     </div>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   )
 }
