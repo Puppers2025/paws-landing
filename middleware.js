@@ -22,10 +22,13 @@ export function middleware(request) {
     return NextResponse.next()
   }
 
-  // Check for admin bypass (only for API routes)
+  // Check for admin bypass (API routes and cookies)
   const adminKey = request.headers.get('x-admin-key')
-  if (adminKey === ADMIN_BYPASS_KEY && pathname.startsWith('/api/')) {
-    console.log('🔓 Admin bypass activated for API:', pathname)
+  const adminCookie = request.cookies.get('admin-bypass')?.value
+  
+  if ((adminKey === ADMIN_BYPASS_KEY && pathname.startsWith('/api/')) || 
+      (adminCookie === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)) {
+    console.log('🔓 Admin bypass activated for:', pathname)
     return NextResponse.next()
   }
 

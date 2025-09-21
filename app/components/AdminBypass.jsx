@@ -161,6 +161,9 @@ export default function AdminBypass() {
             <p className="text-xs text-gray-500">
               Admin access required for development and testing
             </p>
+            <p className="text-xs text-gray-600 mt-2">
+              Debug: Expected key starts with: {process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY?.slice(0, 10)}...
+            </p>
           </div>
         </div>
       </div>

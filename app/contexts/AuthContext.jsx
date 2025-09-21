@@ -21,17 +21,24 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      // Check for admin bypass
+      // Check for admin bypass (localStorage and cookie)
       const adminKey = localStorage.getItem('admin-bypass')
-      if (adminKey && adminKey === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) {
-        console.log('Valid admin key found in localStorage, activating admin mode')
+      const adminCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('admin-bypass='))
+        ?.split('=')[1]
+      
+      if ((adminKey && adminKey === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) ||
+          (adminCookie && adminCookie === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY)) {
+        console.log('Valid admin key found, activating admin mode')
         setIsAdmin(true)
         setUser({ isAdmin: true, walletAddress: 'admin' })
         setIsLoading(false)
         return
-      } else if (adminKey) {
-        console.log('Invalid admin key found in localStorage, clearing it')
+      } else if (adminKey || adminCookie) {
+        console.log('Invalid admin key found, clearing it')
         localStorage.removeItem('admin-bypass')
+        document.cookie = 'admin-bypass=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
       }
 
       // Check for auth token
@@ -87,6 +94,8 @@ export function AuthProvider({ children }) {
     if (key === process.env.NEXT_PUBLIC_ADMIN_BYPASS_KEY) {
       console.log('Admin key is valid, setting admin mode')
       localStorage.setItem('admin-bypass', key)
+      // Set cookie for middleware
+      document.cookie = `admin-bypass=${key}; path=/; max-age=86400` // 24 hours
       setIsAdmin(true)
       setUser({ isAdmin: true, walletAddress: 'admin' })
       return true
@@ -99,6 +108,8 @@ export function AuthProvider({ children }) {
     setIsAdmin(false)
     setUser(null)
     localStorage.removeItem('admin-bypass')
+    // Clear admin bypass cookie
+    document.cookie = 'admin-bypass=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
     // Will redirect via component
   }
 
