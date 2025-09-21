@@ -22,12 +22,16 @@
     "security-monitor": "node scripts/security-monitor.js --watch --alert --log",
     "security-monitor-interval": "node scripts/security-monitor.js --interval=5 --alert --log",
     "security-full": "npm run security-audit && npm run security-test",
-    "preview": "next build && next start"
+    "preview": "next build && next start",
+    "railway": "node railway-server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.2",
     "ethers": "^6.15.0",
+    "express": "^4.18.2",
     "framer-motion": "^12.23.12",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
