@@ -1,7 +1,7 @@
 {
   "name": "puppers-discord-bots",
   "description": "Discord bots for Puppers community and game notifications",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "railway-server.js",
   "scripts": {
     "start": "node railway-server.js",
